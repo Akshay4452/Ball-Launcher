@@ -4,15 +4,22 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 public class BallHandler : MonoBehaviour
 {
-    [SerializeField] private Rigidbody2D currentBallRigidbody2d;
-    [SerializeField] private SpringJoint2D currentBallSpringJoint;
-    private float detachDelay = 0.1f;
+    // we need to delete the current serializefield as there is no ball in the scene
+    [SerializeField] private GameObject ballPrefab;
+    [SerializeField] private Rigidbody2D pivot;
+    [SerializeField] private float detachDelay = 0.1f;
+    [SerializeField] private float respawnDelay = 1.0f;
     private bool isDragging;
     private Camera mainCamera;
+
+    private Rigidbody2D currentBallRigidbody2d;
+    private SpringJoint2D currentBallSpringJoint;
     // Start is called before the first frame update
     void Start()
     {
         mainCamera = Camera.main;
+        // Spawn the ball
+        SpawnBall();
     }
 
     // Update is called once per frame
@@ -57,5 +64,17 @@ public class BallHandler : MonoBehaviour
     {
         currentBallSpringJoint.enabled = false;
         currentBallSpringJoint = null;
+
+        Invoke(nameof(SpawnBall), respawnDelay);
+    }
+    void SpawnBall()
+    {
+        GameObject ballInstance = Instantiate(ballPrefab, pivot.position, Quaternion.identity);
+        // Fetching the ball rigidbody and spring joint
+        currentBallRigidbody2d = ballInstance.GetComponent<Rigidbody2D>();
+        currentBallSpringJoint = ballInstance.GetComponent<SpringJoint2D>();
+
+        // Attach the pivot to ball's spring joint 2d component
+        currentBallSpringJoint.connectedBody = pivot;
     }
 }
