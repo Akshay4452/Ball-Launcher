@@ -11,7 +11,6 @@ public class BallHandler : MonoBehaviour
     [SerializeField] private float respawnDelay = 1.0f;
     private bool isDragging;
     private Camera mainCamera;
-
     private Rigidbody2D currentBallRigidbody2d;
     private SpringJoint2D currentBallSpringJoint;
     // Start is called before the first frame update
